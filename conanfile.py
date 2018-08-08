@@ -42,6 +42,11 @@ class SRTConan(ConanFile):
         extracted_dir = self.name + "-" + self.version
         os.rename(extracted_dir, self.source_subfolder)
 
+        if self.settings.os == "Linux":
+            tools.replace_in_file(os.path.join(self.source_subfolder, 'CMakeLists.txt'),
+                                  'set (SSL_LIBRARIES ${OPENSSL_LIBRARIES})',
+                                  'set (SSL_LIBRARIES ${OPENSSL_LIBRARIES} dl)')
+
     def configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions['ENABLE_SHARED'] = self.options.shared
@@ -69,3 +74,5 @@ class SRTConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = ['srt']
+        if self.settings.os == 'Linux':
+            self.cpp_info.libs.append('pthread')
