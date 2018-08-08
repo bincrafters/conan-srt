@@ -5,15 +5,14 @@ from conans import ConanFile, CMake, tools
 import os
 
 
-class LibnameConan(ConanFile):
-    name = "libname"
-    version = "0.0.0"
-    description = "Keep it short"
-    url = "https://github.com/bincrafters/conan-libname"
-    homepage = "https://github.com/original_author/original_lib"
+class SRTConan(ConanFile):
+    name = "srt"
+    version = "1.3.1"
+    description = "Secure, Reliable, Transport"
+    url = "https://github.com/bincrafters/conan-srt"
+    homepage = "https://www.srtalliance.org/"
     author = "Bincrafters <bincrafters@gmail.com>"
-    # Indicates License type of the packaged library
-    license = "MIT"
+    license = "MPL-2.0"
 
     # Packages the license for the conanfile.py
     exports = ["LICENSE.md"]
@@ -27,35 +26,33 @@ class LibnameConan(ConanFile):
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = "shared=False", "fPIC=True"
 
-    # Custom attributes for Bincrafters recipe conventions
     source_subfolder = "source_subfolder"
     build_subfolder = "build_subfolder"
 
-    # Use version ranges for dependencies unless there's a reason not to
-    # Update 2/9/18 - Per conan team, ranges are slow to resolve.
-    # So, with libs like zlib, updates are very rare, so we now use static version
-
-
-    requires = (
-        "OpenSSL/[>=1.0.2l]@conan/stable",
-        "zlib/1.2.11@conan/stable"
-    )
+    def requirements(self):
+        self.requires.add('OpenSSL/1.0.2o@conan/stable')
 
     def config_options(self):
         if self.settings.os == 'Windows':
             del self.options.fPIC
 
     def source(self):
-        source_url = "https://github.com/libauthor/libname"
+        source_url = "https://github.com/Haivision/srt"
         tools.get("{0}/archive/v{1}.tar.gz".format(source_url, self.version))
         extracted_dir = self.name + "-" + self.version
-
-        #Rename to "source_subfolder" is a convention to simplify later steps
         os.rename(extracted_dir, self.source_subfolder)
 
     def configure_cmake(self):
         cmake = CMake(self)
-        cmake.definitions["BUILD_TESTS"] = False # example
+        cmake.definitions['ENABLE_SHARED'] = self.options.shared
+        cmake.definitions['ENABLE_STATIC'] = not self.options.shared
+        cmake.definitions['ENABLE_DEBUG'] = self.settings.build_type == 'Debug'
+
+        cmake.definitions['OPENSSL_ROOT_DIR'] = self.deps_cpp_info['OpenSSL'].rootpath
+        cmake.definitions['OPENSSL_INCLUDE_DIR'] = self.deps_cpp_info['OpenSSL'].include_paths[0]
+        cmake.definitions['OPENSSL_LIB_DIR'] = self.deps_cpp_info['OpenSSL'].lib_paths[0]
+        cmake.definitions['OPENSSL_LIBRARIES'] = ';'.join(self.deps_cpp_info['OpenSSL'].libs)
+
         if self.settings.os != 'Windows':
             cmake.definitions['CMAKE_POSITION_INDEPENDENT_CODE'] = self.options.fPIC
         cmake.configure(build_folder=self.build_subfolder)
@@ -69,15 +66,6 @@ class LibnameConan(ConanFile):
         self.copy(pattern="LICENSE", dst="licenses", src=self.source_subfolder)
         cmake = self.configure_cmake()
         cmake.install()
-        # If the CMakeLists.txt has a proper install method, the steps below may be redundant
-        # If so, you can just remove the lines below
-        include_folder = os.path.join(self.source_subfolder, "include")
-        self.copy(pattern="*", dst="include", src=include_folder)
-        self.copy(pattern="*.dll", dst="bin", keep_path=False)
-        self.copy(pattern="*.lib", dst="lib", keep_path=False)
-        self.copy(pattern="*.a", dst="lib", keep_path=False)
-        self.copy(pattern="*.so*", dst="lib", keep_path=False)
-        self.copy(pattern="*.dylib", dst="lib", keep_path=False)
 
     def package_info(self):
-        self.cpp_info.libs = tools.collect_libs(self)
+        self.cpp_info.libs = ['srt']
