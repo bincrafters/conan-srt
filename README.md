@@ -1,5 +1,5 @@
 [![Download](https://api.bintray.com/packages/bincrafters/public-conan/srt%3Abincrafters/images/download.svg) ](https://bintray.com/bincrafters/public-conan/srt%3Abincrafters/_latestVersion)
-[![Build Status](https://travis-ci.org/bincrafters/conan-srt.svg?branch=testing%2F1.3.1)](https://travis-ci.org/bincrafters/conan-srt)
+[![Build Status](https://travis-ci.com/bincrafters/conan-srt.svg?branch=testing%2F1.3.1)](https://travis-ci.com/bincrafters/conan-srt)
 [![Build status](https://ci.appveyor.com/api/projects/status/github/bincrafters/conan-srt?branch=testing%2F1.3.1&svg=true)](https://ci.appveyor.com/project/bincrafters/conan-srt)
 
 [Conan.io](https://conan.io) package recipe for [*srt*](https://www.srtalliance.org/).

@@ -24,13 +24,13 @@ class SRTConan(ConanFile):
     # Options may need to change depending on the packaged library.
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = "shared=False", "fPIC=True"
+    default_options = {'shared': False, 'fPIC': True}
 
-    source_subfolder = "source_subfolder"
-    build_subfolder = "build_subfolder"
+    _source_subfolder = "source_subfolder"
+    _build_subfolder = "build_subfolder"
 
     def requirements(self):
-        self.requires.add('OpenSSL/1.0.2o@conan/stable')
+        self.requires.add('openssl/1.0.2t')
         if self.settings.os == 'Windows':
             self.requires.add('pthread-win32/2.9.1@bincrafters/stable')
 
@@ -42,21 +42,21 @@ class SRTConan(ConanFile):
         source_url = "https://github.com/Haivision/srt"
         tools.get("{0}/archive/v{1}.tar.gz".format(source_url, self.version))
         extracted_dir = self.name + "-" + self.version
-        os.rename(extracted_dir, self.source_subfolder)
+        os.rename(extracted_dir, self._source_subfolder)
 
         if self.settings.os == "Linux":
-            tools.replace_in_file(os.path.join(self.source_subfolder, 'CMakeLists.txt'),
+            tools.replace_in_file(os.path.join(self._source_subfolder, 'CMakeLists.txt'),
                                   'set (SSL_LIBRARIES ${OPENSSL_LIBRARIES})',
                                   'set (SSL_LIBRARIES ${OPENSSL_LIBRARIES} dl)')
 
-        tools.replace_in_file(os.path.join(self.source_subfolder, 'CMakeLists.txt'),
+        tools.replace_in_file(os.path.join(self._source_subfolder, 'CMakeLists.txt'),
                               'srt_add_application(srt-multiplex ${VIRTUAL_srtsupport})',
                               '#srt_add_application(srt-multiplex ${VIRTUAL_srtsupport})')
-        tools.replace_in_file(os.path.join(self.source_subfolder, 'CMakeLists.txt'),
+        tools.replace_in_file(os.path.join(self._source_subfolder, 'CMakeLists.txt'),
                               'srt_add_application(srt-file-transmit ${VIRTUAL_srtsupport})',
                               '#srt_add_application(srt-file-transmit ${VIRTUAL_srtsupport})')
 
-    def configure_cmake(self):
+    def _configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions['CMAKE_INSTALL_LIBDIR'] = 'lib'
         cmake.definitions['CMAKE_INSTALL_BINDIR'] = 'bin'
@@ -76,16 +76,16 @@ class SRTConan(ConanFile):
 
         if self.settings.os != 'Windows':
             cmake.definitions['CMAKE_POSITION_INDEPENDENT_CODE'] = self.options.fPIC
-        cmake.configure(build_folder=self.build_subfolder)
+        cmake.configure(build_folder=self._build_subfolder)
         return cmake
 
     def build(self):
-        cmake = self.configure_cmake()
+        cmake = self._configure_cmake()
         cmake.build()
 
     def package(self):
-        self.copy(pattern="LICENSE", dst="licenses", src=self.source_subfolder)
-        cmake = self.configure_cmake()
+        self.copy(pattern="LICENSE", dst="licenses", src=self._source_subfolder)
+        cmake = self._configure_cmake()
         cmake.install()
 
     def package_info(self):
