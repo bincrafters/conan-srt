@@ -65,10 +65,10 @@ class SRTConan(ConanFile):
         cmake.definitions['ENABLE_STATIC'] = not self.options.shared
         cmake.definitions['ENABLE_DEBUG'] = self.settings.build_type == 'Debug'
 
-        cmake.definitions['OPENSSL_ROOT_DIR'] = self.deps_cpp_info['OpenSSL'].rootpath
-        cmake.definitions['OPENSSL_INCLUDE_DIR'] = self.deps_cpp_info['OpenSSL'].include_paths[0]
-        cmake.definitions['OPENSSL_LIB_DIR'] = self.deps_cpp_info['OpenSSL'].lib_paths[0]
-        cmake.definitions['OPENSSL_LIBRARIES'] = ';'.join(self.deps_cpp_info['OpenSSL'].libs)
+        cmake.definitions['OPENSSL_ROOT_DIR'] = self.deps_cpp_info['openssl'].rootpath
+        cmake.definitions['OPENSSL_INCLUDE_DIR'] = self.deps_cpp_info['openssl'].include_paths[0]
+        cmake.definitions['OPENSSL_LIB_DIR'] = self.deps_cpp_info['openssl'].lib_paths[0]
+        cmake.definitions['OPENSSL_LIBRARIES'] = ';'.join(self.deps_cpp_info['openssl'].libs)
 
         if self.settings.os == 'Windows':
             cmake.definitions['PTHREAD_INCLUDE_DIR'] = self.deps_cpp_info['pthread-win32'].include_paths[0]
