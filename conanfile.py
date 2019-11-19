@@ -8,7 +8,6 @@ class SRTConan(ConanFile):
     description = "Secure, Reliable, Transport"
     url = "https://github.com/bincrafters/conan-srt"
     homepage = "https://www.srtalliance.org/"
-    author = "Bincrafters <bincrafters@gmail.com>"
     license = "MPL-2.0"
 
     # Packages the license for the conanfile.py
