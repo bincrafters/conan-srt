@@ -4,7 +4,7 @@ import os
 
 class SRTConan(ConanFile):
     name = "srt"
-    version = "1.3.1"
+    version = "1.4.1"
     description = "Secure, Reliable, Transport"
     url = "https://github.com/bincrafters/conan-srt"
     homepage = "https://www.srtalliance.org/"
@@ -38,6 +38,12 @@ class SRTConan(ConanFile):
             tools.replace_in_file(os.path.join(self._source_subfolder, 'CMakeLists.txt'),
                                   'set (SSL_LIBRARIES ${OPENSSL_LIBRARIES})',
                                   'set (SSL_LIBRARIES ${OPENSSL_LIBRARIES} dl)')
+
+        # Fix OpenSSL linking with 1.1.1+
+        if self.settings.os == "Windows":
+            tools.replace_in_file(os.path.join(self._source_subfolder, 'CMakeLists.txt'),
+                                  'set (SSL_LIBRARIES ${OPENSSL_LIBRARIES})',
+                                  'set (SSL_LIBRARIES ${OPENSSL_LIBRARIES} crypt32)')
 
         tools.replace_in_file(os.path.join(self._source_subfolder, 'CMakeLists.txt'),
                               'srt_add_application(srt-multiplex ${VIRTUAL_srtsupport})',
