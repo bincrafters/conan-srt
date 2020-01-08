@@ -88,4 +88,4 @@ class SRTConan(ConanFile):
         else:
             self.cpp_info.libs = ['srt']
         if self.settings.os == 'Linux':
-            self.cpp_info.libs.append('pthread')
+            self.cpp_info.system_libs.append('pthread', 'dl')
