@@ -9,15 +9,9 @@ class SRTConan(ConanFile):
     url = "https://github.com/bincrafters/conan-srt"
     homepage = "https://www.srtalliance.org/"
     license = "MPL-2.0"
-
-    # Packages the license for the conanfile.py
-    exports = ["LICENSE.md"]
-
-    # Remove following lines if the target lib does not use cmake.
     exports_sources = ["CMakeLists.txt"]
     generators = "cmake"
 
-    # Options may need to change depending on the packaged library.
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {'shared': False, 'fPIC': True}
@@ -26,7 +20,7 @@ class SRTConan(ConanFile):
     _build_subfolder = "build_subfolder"
 
     def requirements(self):
-        self.requires.add('openssl/1.0.2t')
+        self.requires.add('openssl/1.1.1d')
         if self.settings.os == 'Windows':
             self.requires.add('pthread-win32/2.9.1@bincrafters/stable')
 
@@ -70,8 +64,6 @@ class SRTConan(ConanFile):
             cmake.definitions['PTHREAD_INCLUDE_DIR'] = self.deps_cpp_info['pthread-win32'].include_paths[0]
             cmake.definitions['PTHREAD_LIBRARY'] = self.deps_cpp_info['pthread-win32'].libs[0]
 
-        if self.settings.os != 'Windows':
-            cmake.definitions['CMAKE_POSITION_INDEPENDENT_CODE'] = self.options.fPIC
         cmake.configure(build_folder=self._build_subfolder)
         return cmake
 
