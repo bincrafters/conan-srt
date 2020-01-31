@@ -67,8 +67,8 @@ class SRTConan(ConanFile):
         cmake.definitions['OPENSSL_LIBRARIES'] = ';'.join(self.deps_cpp_info['openssl'].libs)
 
         if self.settings.os == 'Windows':
-            cmake.definitions['PTHREAD_INCLUDE_DIR'] = self.deps_cpp_info['pthread-win32'].include_paths[0]
-            cmake.definitions['PTHREAD_LIBRARY'] = self.deps_cpp_info['pthread-win32'].libs[0]
+            cmake.definitions['PTHREAD_INCLUDE_DIR'] = self.deps_cpp_info['pthreads4w'].include_paths[0]
+            cmake.definitions['PTHREAD_LIBRARY'] = self.deps_cpp_info['pthreads4w'].libs[0]
 
         cmake.configure(build_folder=self._build_subfolder)
         return cmake
