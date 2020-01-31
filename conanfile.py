@@ -22,7 +22,7 @@ class SRTConan(ConanFile):
     def requirements(self):
         self.requires.add('openssl/1.1.1d')
         if self.settings.os == 'Windows':
-            self.requires.add('pthread-win32/2.9.1@bincrafters/stable')
+            self.requires.add('pthreads4w/3.0.0')
 
     def config_options(self):
         if self.settings.os == 'Windows':
