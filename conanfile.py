@@ -20,7 +20,7 @@ class SRTConan(ConanFile):
     _build_subfolder = "build_subfolder"
 
     def requirements(self):
-        self.requires.add('openssl/1.1.1d')
+        self.requires.add('openssl/1.1.1f')
         if self.settings.os == 'Windows':
             self.requires.add('pthreads4w/3.0.0')
 
